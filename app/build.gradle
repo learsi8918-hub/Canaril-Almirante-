@@ -1,1 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
 
+android {
+    namespace 'com.almirante.canaril'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.almirante.canaril'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '3.0'
+    }
+}
