@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - principal
 
 jobs:
   build:
@@ -32,6 +32,16 @@ jobs:
 
       - name: Criar Gradle Wrapper
         run: gradle wrapper --gradle-version 8.7
+
+      - name: Preparar interface do aplicativo
+        run: |
+          mkdir -p app/src/main/assets
+          if [ -f index.html ]; then
+            cp index.html app/src/main/assets/index.html
+          elif [ ! -f app/src/main/assets/index.html ]; then
+            echo "index.html não encontrado"
+            exit 1
+          fi
 
       - name: Compilar APK
         run: ./gradlew assembleDebug
