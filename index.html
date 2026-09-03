@@ -1,98 +1,127 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#18212b"><link rel="manifest" href="manifest.json">
-<title>Canaril Almirante</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050607">
+<title>Almirante Canaril</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f4f6f8;color:#18212b}
-header{background:#18212b;color:white;padding:18px 16px 16px;position:sticky;top:0;z-index:5}
-header h1{margin:0;font-size:21px}header small{opacity:.75}.wrap{max-width:900px;margin:auto;padding:14px 14px 90px}
-.card{background:white;border-radius:16px;padding:15px;margin:10px 0;box-shadow:0 2px 10px #0000000b}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
-.kpi{padding:14px;border-radius:14px;background:#eef2f5}.kpi b{display:block;font-size:26px}.btn{border:0;border-radius:11px;padding:10px 13px;background:#18212b;color:white;font-weight:650;cursor:pointer;margin:3px}.btn.alt{background:#e8edf1;color:#18212b}.btn.danger{background:#b42318}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.tag{display:inline-block;background:#edf1f4;border-radius:20px;padding:4px 8px;font-size:12px;margin:2px}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;display:flex;justify-content:center;z-index:10}nav button{flex:1;max-width:180px;background:white;border:0;padding:11px 5px;font-size:12px;color:#56616c}
-nav button.active{color:#18212b;font-weight:800}.hidden{display:none}input,select,textarea{width:100%;padding:10px;border:1px solid #ccd3d9;border-radius:10px;background:white;margin:4px 0 9px}label{font-size:12px;font-weight:700}.item{padding:12px 0;border-bottom:1px solid #edf0f2}.item:last-child{border:0}
-h2{font-size:18px;margin:5px 0 10px}h3{font-size:15px;margin:3px 0}.muted{color:#69747e;font-size:13px}.notice{padding:11px;border-radius:11px;background:#fff6d8;margin:8px 0}.ok{background:#eaf7ed}.photo{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#e9edf0}.avatar{display:flex;gap:10px;align-items:center}
+:root{--bg:#050607;--panel:#0d1012;--panel2:#111518;--gold:#d7a936;--gold2:#f0c85b;--red:#b51618;--text:#f5f3ed;--muted:#aaa89f;--line:#4b3b16;--ok:#74b85c}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom));}
+button,input,select,textarea{font:inherit}
+.app{max-width:720px;margin:auto;min-height:100vh}
+header{padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--line);background:linear-gradient(#0a0c0d,#050607);position:sticky;top:0;z-index:10}
+.logo-cross{font-size:38px;color:#d21b1e;line-height:1;text-shadow:0 0 10px #6d0909}
+.brand{font-family:Georgia,serif;font-size:30px;letter-spacing:2px;color:var(--gold2);font-weight:800}
+.sub{font-size:11px;letter-spacing:2px;color:#e6e0d2;margin-top:2px}
+main{padding:16px}
+.hero{background:radial-gradient(circle at 50% 0,#211b0c,#0a0c0d 55%);border:1px solid var(--line);border-radius:22px;padding:22px 16px;text-align:center;box-shadow:0 8px 30px #0008}
+.hero h2{font-family:Georgia,serif;color:var(--gold2);margin:0 0 5px;font-size:28px}
+.hero p{margin:0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.tile{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#14181a,#090b0c);padding:20px 10px;text-align:center;color:var(--text);min-height:118px}
+.tile .ico{font-size:32px;color:var(--gold2);margin-bottom:6px}.tile b{display:block;color:var(--gold2);letter-spacing:1px}.tile small{color:var(--muted)}
+.card{background:var(--panel);border:1px solid #252a2c;border-radius:17px;padding:15px;margin:12px 0}
+.card h2{margin:0 0 10px;color:var(--gold2);font-family:Georgia,serif}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center}.kpi b{font-size:23px;color:var(--gold2);display:block}.kpi span{font-size:11px;color:var(--muted)}
+.item{padding:12px 0;border-bottom:1px solid #24282a}.item:last-child{border-bottom:0}
+.name{font-weight:800}.muted{color:var(--muted);font-size:12px}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:11px;color:#ddd4be;margin:2px}
+.btn{border:1px solid var(--gold);background:#16130b;color:var(--gold2);border-radius:11px;padding:9px 12px;font-weight:700}.btn.primary{background:var(--gold);color:#080808}.btn.danger{border-color:#7d2020;color:#ff8e8e}
+input,select,textarea{width:100%;background:#0b0e0f;color:var(--text);border:1px solid #353a3c;border-radius:10px;padding:10px;margin:4px 0 9px}
+label{font-size:11px;color:#d7d1c4;font-weight:700}
+.hidden{display:none}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:#080a0b;border-top:1px solid var(--line);box-shadow:0 -6px 22px #000b}
+nav button{flex:1;max-width:145px;border:0;background:transparent;color:#888;padding:7px 3px 5px;font-size:10px}
+nav button.active{color:var(--gold2);font-weight:800}
+nav .ni{display:block;font-size:19px;line-height:20px;margin-bottom:2px}
+.notice{border-left:3px solid var(--gold);background:#171309;border-radius:10px;padding:11px;color:#ded6c5;font-size:12px}
+@media(min-width:650px){main{padding:22px}.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header><h1>🐦 Canaril Almirante</h1><small>Gestão do plantel e reprodução</small></header>
-<div class="wrap">
-<section id="dashboard"></section><section id="plantel" class="hidden"></section><section id="casais" class="hidden"></section><section id="repro" class="hidden"></section><section id="pedigree" class="hidden"></section><section id="agenda" class="hidden"></section>
-</div>
+<div class="app">
+<header>
+  <div class="logo-cross">✠</div>
+  <div class="brand">ALMIRANTE</div>
+  <div class="sub">CANARIL · CANÁRIOS BELGAS · ARLEQUIM PORTUGUÊS</div>
+</header>
+<main>
+<section id="inicio"></section>
+<section id="plantel" class="hidden"></section>
+<section id="casais" class="hidden"></section>
+<section id="filhotes" class="hidden"></section>
+<section id="agenda" class="hidden"></section>
+</main>
 <nav>
-<button onclick="show('dashboard')" id="n-dashboard">🏠<br>Início</button>
-<button onclick="show('plantel')" id="n-plantel">🐤<br>Plantel</button>
-<button onclick="show('casais')" id="n-casais">❤️<br>Casais</button>
-<button onclick="show('repro')" id="n-repro">🥚<br>Reprodução</button>
-<button onclick="show('pedigree')" id="n-pedigree">🌳<br>Pedigree</button>
+<button onclick="show('inicio')" id="n-inicio"><span class="ni">⌂</span>Início</button>
+<button onclick="show('plantel')" id="n-plantel"><span class="ni">🐦</span>Plantel</button>
+<button onclick="show('casais')" id="n-casais"><span class="ni">♧</span>Casais</button>
+<button onclick="show('filhotes')" id="n-filhotes"><span class="ni">🐣</span>Filhotes</button>
+<button onclick="show('agenda')" id="n-agenda"><span class="ni">▦</span>Agenda</button>
 </nav>
-
+</div>
 <script>
-const KEY='almirante_v3';
+const KEY='almirante_v3_visual';
 const seed={
 birds:[
-['Ancião','Macho','2024','Arlequim Português','Não'],['Patroa','Fêmea','2025','Arlequim Português','Não'],
-['Soberana','Fêmea','2025','Arlequim Português','Não'],['Buglê','Macho','2025','Arlequim Português','Sim'],
-['Pinky Mary','Fêmea','2025','Arlequim Português','Não'],['Coisado','Macho','2025','Arlequim Português','Não'],
-['Franjinha','Fêmea','2025','Arlequim Português','Sim'],['Bianchini','Macho','2025','Arlequim Português','Não']],
+{name:'Ancião',sex:'Macho',year:'2024',breed:'Arlequim Português',crest:false},
+{name:'Patroa',sex:'Fêmea',year:'2025',breed:'Arlequim Português',crest:false},
+{name:'Soberana',sex:'Fêmea',year:'2025',breed:'Arlequim Português',crest:false},
+{name:'Buglê',sex:'Macho',year:'2025',breed:'Arlequim Português',crest:true},
+{name:'Pinky Mary',sex:'Fêmea',year:'2025',breed:'Arlequim Português',crest:false},
+{name:'Coisado',sex:'Macho',year:'2025',breed:'Arlequim Português',crest:false},
+{name:'Franjinha',sex:'Fêmea',year:'2025',breed:'Arlequim Português',crest:true},
+{name:'Bianchini',sex:'Macho',year:'2025',breed:'Arlequim Português',crest:false}],
 pairs:[
-{id:1,f:'Patroa',m:'Ancião',status:'Ativo',nest:'Em construção',eggs:0},
-{id:2,f:'Soberana',m:'Buglê',status:'Preparação',nest:'',eggs:0},
-{id:3,f:'Pinky Mary',m:'Coisado',status:'Preparação',nest:'',eggs:0},
-{id:4,f:'Franjinha',m:'Bianchini',status:'Preparação',nest:'',eggs:0}],
+{name:'Patroa × Ancião',female:'Patroa',male:'Ancião',status:'Ativo',nest:1,eggs:0},
+{name:'Soberana × Buglê',female:'Soberana',male:'Buglê',status:'Ativo',nest:2,eggs:0},
+{name:'Pinky Mary × Coisado',female:'Pinky Mary',male:'Coisado',status:'Ativo',nest:3,eggs:0},
+{name:'Franjinha × Bianchini',female:'Franjinha',male:'Bianchini',status:'Ativo',nest:4,eggs:0}],
 chicks:[],events:[
-{date:'02/09/2026',pair:'Patroa × Ancião',text:'Patroa entrou no ninho e permaneceu aproximadamente 5–8 minutos, deitada quieta.'},
-{date:'01/09/2026',pair:'Patroa × Ancião',text:'Copulações observadas.'}]};
+{date:'02/09/2026',text:'Patroa entrou no ninho e permaneceu cerca de 5–8 minutos.',pair:'Patroa × Ancião'},
+{date:'01/09/2026',text:'Cópulas observadas após as 18h.',pair:'Patroa × Ancião'}]};
 let db=JSON.parse(localStorage.getItem(KEY)||'null')||seed;
-function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
-function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function show(id){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById('n-'+id).classList.add('active');renderAll()}
-function pairName(p){return p.f+' × '+p.m}
-function dashboard(){
-let today=new Date();let next=[];
-db.events.forEach(e=>{if(e.date==='02/09/2026')next.push(e)});
-return `<h2>Painel</h2><div class="grid">
-<div class="kpi"><span>Plantel</span><b>${db.birds.length}</b></div><div class="kpi"><span>Casais</span><b>${db.pairs.length}</b></div>
-<div class="kpi"><span>Filhotes</span><b>${db.chicks.length}</b></div><div class="kpi"><span>Eventos</span><b>${db.events.length}</b></div></div>
-<div class="card"><h2>🔔 Atenção hoje</h2><div class="notice"><b>Patroa × Ancião</b><br>Casal mais adiantado. Patroa já está entrando no ninho e ficando alguns minutos.</div>
-<button class="btn" onclick="show('repro')">Registrar reprodução</button></div>
-<div class="card"><h2>Casais</h2>${db.pairs.map(p=>`<div class="item"><div class="row"><b>${esc(pairName(p))}</b><span class="tag">${esc(p.status)}</span></div><div class="muted">Ninho: ${esc(p.nest||'não iniciado')} · Ovos: ${p.eggs} · Filhotes: ${db.chicks.filter(c=>c.pairId==p.id).length}</div></div>`).join('')}</div>`
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function show(id){
+ document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ document.getElementById('n-'+id).classList.add('active');
+ render();
 }
-function plantel(){
-return `<h2>🐤 Plantel</h2><div class="card"><button class="btn" onclick="newBird()">+ Novo canário</button></div>
-${db.birds.map((b,i)=>`<div class="card"><div class="row"><div><h3>${esc(b[0])}</h3><div class="muted">${b[1]} · ${b[2]} · ${b[3]}</div></div><button class="btn alt" onclick="editBird(${i})">Editar</button></div><span class="tag">Topete: ${b[4]}</span></div>`).join('')}`
+function tile(icon,title,sub,id){return `<button class="tile" onclick="show('${id}')"><div class="ico">${icon}</div><b>${title}</b><small>${sub}</small></button>`}
+function renderInicio(){
+ document.getElementById('inicio').innerHTML=`<div class="hero"><div class="logo-cross">✠</div><h2>ALMIRANTE CANARIL</h2><p>Gestão do plantel, reprodução e genética</p>
+ <div class="grid">${tile('🐦','PLANTEL','Meus canários','plantel')}${tile('♧','CASAIS','Reprodução','casais')}${tile('🐣','FILHOTES','Acompanhamento','filhotes')}${tile('▦','AGENDA','Eventos e manejo','agenda')}</div></div>
+ <div class="card"><h2>Visão geral</h2><div class="kpis"><div class="kpi"><b>${db.birds.length}</b><span>Canários</span></div><div class="kpi"><b>${db.pairs.length}</b><span>Casais</span></div><div class="kpi"><b>${db.chicks.length}</b><span>Filhotes</span></div></div></div>
+ <div class="notice">✠ <b>Almirante</b> — tradição, qualidade, manejo e disciplina.</div>`;
 }
-function casais(){
-return `<h2>❤️ Casais</h2>${db.pairs.map(p=>`<div class="card"><div class="row"><div><h3>${esc(pairName(p))}</h3><div class="muted">${p.status} · Ninho: ${p.nest||'—'}</div></div><button class="btn alt" onclick="pairActions(${p.id})">Abrir</button></div><div><span class="tag">🥚 ${p.eggs} ovos</span><span class="tag">🐣 ${db.chicks.filter(c=>c.pairId==p.id).length} filhotes</span></div></div>`).join('')}
-<div class="card"><button class="btn" onclick="newPair()">+ Novo casal</button></div>`
+function renderPlantel(){
+ let list=db.birds.map((b,i)=>`<div class="item"><div class="row"><div><div class="name">${b.name} ${b.sex==='Macho'?'♂':'♀'}</div><div class="muted">${b.breed} · ${b.year}</div></div><span class="tag">${b.crest?'Topete':'Sem topete'}</span></div></div>`).join('');
+ document.getElementById('plantel').innerHTML=`<div class="card"><div class="row"><h2>PLANTEL</h2><button class="btn primary" onclick="addBird()">+ Canário</button></div>${list}</div>`;
 }
-function repro(){
-return `<h2>🥚 Reprodução</h2><div class="card"><h3>Registrar evento</h3>
-<label>Casal</label><select id="evpair">${db.pairs.map(p=>`<option value="${p.id}">${esc(pairName(p))}</option>`).join('')}</select>
-<label>Tipo</label><select id="evtype"><option>Copulação</option><option>Entrada no ninho</option><option>Primeiro ovo</option><option>Ovo</option><option>Filhote nascido</option><option>Anilhamento</option><option>Separação do filhote</option><option>Observação</option></select>
-<label>Data</label><input id="evdate" type="date" value="2026-09-02"><label>Observação</label><textarea id="evtext" placeholder="Detalhes"></textarea>
-<button class="btn" onclick="addEvent()">Salvar evento</button></div>
-<div class="card"><h2>Histórico</h2>${db.events.slice().reverse().map(e=>`<div class="item"><b>${esc(e.date)} · ${esc(e.pair)}</b><br>${esc(e.text)}</div>`).join('')}</div>`
+function renderCasais(){
+ let list=db.pairs.map((p,i)=>`<div class="item"><div class="row"><div><div class="name">${p.name}</div><div class="muted">Ninho ${p.nest} · ${p.status}</div></div><span class="tag">${p.eggs} ovos</span></div></div>`).join('');
+ document.getElementById('casais').innerHTML=`<div class="card"><div class="row"><h2>CASAIS</h2><button class="btn primary" onclick="addEgg()">+ Ovo</button></div>${list}</div>
+ <div class="card"><h2>Mais adiantado</h2><div class="notice"><b>Patroa × Ancião</b><br>Patroa já apresenta comportamento de permanência no ninho.</div></div>`;
 }
-function pedigree(){
-return `<h2>🌳 Pedigree</h2><div class="card"><p class="muted">Os filhotes registrados ficam ligados automaticamente ao casal. Ao adicionar pais dos reprodutores, o sistema poderá montar avós e bisavós.</p>
-${db.chicks.length?db.chicks.map(c=>`<div class="item"><b>${esc(c.code)}</b> · ${esc(c.name||'Filhote')}</div>`).join(''):'<p>Nenhum filhote registrado ainda.</p>'}</div>
-<div class="card"><h3>Filhotes por casal</h3>${db.pairs.map(p=>`<div class="item"><b>${esc(pairName(p))}</b><br>${db.chicks.filter(c=>c.pairId==p.id).map(c=>esc(c.code)).join(', ')||'Nenhum'}</div>`).join('')}</div>`
+function renderChicks(){
+ let list=db.chicks.length?db.chicks.map(c=>`<div class="item"><b>${c.code}</b><div class="muted">${c.date} · ${c.sex||'Sexo não definido'} · ${c.pair}</div></div>`).join(''):'<div class="muted">Nenhum filhote registrado ainda.</div>';
+ document.getElementById('filhotes').innerHTML=`<div class="card"><div class="row"><h2>FILHOTES</h2><button class="btn primary" onclick="addChick()">+ Filhote</button></div>${list}</div>`;
 }
-function agenda(){
-let dates=[...db.events].sort((a,b)=>b.date.localeCompare(a.date));
-return `<h2>📅 Agenda e alertas</h2><div class="card"><div class="notice ok"><b>Automação preparada</b><br>Ao registrar o primeiro ovo, a próxima versão pode calcular automaticamente incubação, nascimento estimado, anilhamento e separação.</div></div>
-<div class="card">${dates.map(e=>`<div class="item"><b>${esc(e.date)}</b> — ${esc(e.pair)}<br>${esc(e.text)}</div>`).join('')}</div>`
+function renderAgenda(){
+ let list=db.events.slice().reverse().map(e=>`<div class="item"><div class="name">${e.date}</div><div>${e.text}</div><div class="muted">${e.pair||''}</div></div>`).join('');
+ document.getElementById('agenda').innerHTML=`<div class="card"><div class="row"><h2>AGENDA</h2><button class="btn primary" onclick="addEvent()">+ Evento</button></div>${list}</div>`;
 }
-function renderAll(){document.getElementById('dashboard').innerHTML=dashboard();document.getElementById('plantel').innerHTML=plantel();document.getElementById('casais').innerHTML=casais();document.getElementById('repro').innerHTML=repro();document.getElementById('pedigree').innerHTML=pedigree();document.getElementById('agenda').innerHTML=agenda()}
-function newBird(){let n=prompt('Nome do canário:');if(!n)return;let sex=prompt('Sexo (Macho/Fêmea):','Macho')||'';let year=prompt('Ano de nascimento:','2026')||'';db.birds.push([n,sex,year,'Arlequim Português','Não']);save();show('plantel')}
-function editBird(i){let b=db.birds[i];let n=prompt('Nome:',b[0]);if(!n)return;b[0]=n;b[1]=prompt('Sexo:',b[1])||b[1];b[2]=prompt('Ano:',b[2])||b[2];b[3]=prompt('Raça:',b[3])||b[3];b[4]=prompt('Topete (Sim/Não):',b[4])||b[4];save()}
-function newPair(){let f=prompt('Nome da fêmea:');let m=prompt('Nome do macho:');if(f&&m){db.pairs.push({id:Date.now(),f,m,status:'Preparação',nest:'',eggs:0});save()}}
-function pairActions(id){let p=db.pairs.find(x=>x.id==id);let op=prompt(`Casal ${pairName(p)}\n1=registrar ovo\n2=registrar filhote\n3=alterar status\n4=alterar ninho`,'1');if(op==='1'){p.eggs++;db.events.push({date:'02/09/2026',pair:pairName(p),text:`Ovo registrado. Total do casal: ${p.eggs}.`});save()}else if(op==='2'){let code='ALM-'+new Date().getFullYear()+'-'+String(db.chicks.length+1).padStart(3,'0');db.chicks.push({code,name:'',pairId:id,birth:'02/09/2026',sex:'Indefinido'});db.events.push({date:'02/09/2026',pair:pairName(p),text:`Filhote ${code} registrado.`});save()}else if(op==='3'){p.status=prompt('Status:',p.status)||p.status;save()}else if(op==='4'){p.nest=prompt('Situação do ninho:',p.nest)||p.nest;save()}}
-function addEvent(){let p=db.pairs.find(x=>x.id==+document.getElementById('evpair').value);let type=document.getElementById('evtype').value;let d=document.getElementById('evdate').value.split('-').reverse().join('/');let t=document.getElementById('evtext').value||type;if(type==='Ovo'||type==='Primeiro ovo'){p.eggs++;}db.events.push({date:d,pair:pairName(p),text:t});save()}
-renderAll();show('dashboard');
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+function render(){renderInicio();renderPlantel();renderCasais();renderChicks();renderAgenda()}
+function addBird(){let name=prompt('Nome do canário:');if(!name)return;let sex=prompt('Sexo (Macho/Fêmea):','Macho')||'Macho';db.birds.push({name,sex,year:'2026',breed:'Arlequim Português',crest:false});save();render()}
+function addEgg(){let p=db.pairs[0];p.eggs++;db.events.push({date:new Date().toLocaleDateString('pt-BR'),text:'Ovo registrado.',pair:p.name});save();render()}
+function addChick(){let pair=prompt('Casal:','Patroa × Ancião')||'Patroa × Ancião';let n=db.chicks.length+1;let code='ALM-'+new Date().getFullYear()+'-'+String(n).padStart(3,'0');db.chicks.push({code,date:new Date().toLocaleDateString('pt-BR'),sex:'',pair});save();render()}
+function addEvent(){let text=prompt('Descrição do evento:');if(!text)return;db.events.push({date:new Date().toLocaleDateString('pt-BR'),text,pair:''});save();render()}
+show('inicio');
 </script>
-</body></html>
+</body>
+</html>
