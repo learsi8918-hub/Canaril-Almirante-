@@ -1,0 +1,397 @@
+<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#050607">
+<title>Canaril Almirante</title><style>
+:root{--bg:#050607;--p:#0d1012;--g:#d7a936;--g2:#f0c85b;--r:#b51618;--t:#f5f3ed;--m:#aaa89f;--l:#4b3b16}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,Segoe UI,sans-serif}body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+.app{max-width:760px;margin:auto;min-height:100vh}header{padding:14px;text-align:center;border-bottom:1px solid var(--l);background:#07090a;position:sticky;top:0;z-index:10}.cross{font-size:31px;color:#d21b1e}.brand{font:800 27px Georgia;color:var(--g2);letter-spacing:2px}.sub{font-size:10px;letter-spacing:1.5px;color:#ddd5c5}main{padding:14px}.card{background:var(--p);border:1px solid #292d2f;border-radius:17px;padding:15px;margin:12px 0}h2{margin:0 0 12px;color:var(--g2);font-family:Georgia}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.btn{border:1px solid var(--g);background:#17130a;color:var(--g2);border-radius:11px;padding:9px 12px;font-weight:700}.primary{background:var(--g);color:#080808}.danger{border-color:#7b2020;color:#ff9696}input,select,textarea{width:100%;background:#090c0d;color:var(--t);border:1px solid #3a3e40;border-radius:10px;padding:10px;margin:4px 0 9px}textarea{min-height:75px}label{font-size:11px;color:#d8d0c0;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{border:1px solid var(--l);border-radius:17px;background:#0d1012;color:var(--t);padding:18px 8px;text-align:center}.tile span{font-size:30px}.tile b{display:block;color:var(--g2);margin-top:5px}.item{padding:12px 0;border-bottom:1px solid #25292b}.bird{display:flex;gap:12px;align-items:center}.photo{width:64px;height:64px;border-radius:14px;object-fit:cover;background:#171a1b;border:1px solid var(--l);display:flex;align-items:center;justify-content:center;font-size:28px}.big{width:115px;height:115px;border-radius:18px}.name{font-weight:800}.muted{font-size:12px;color:var(--m)}.tag{display:inline-block;border:1px solid var(--l);border-radius:999px;padding:4px 8px;font-size:10px;color:#ddd4be;margin:2px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.hidden{display:none}.notice{border-left:3px solid var(--g);background:#171309;padding:11px;border-radius:10px;font-size:12px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;padding:7px 6px calc(7px + env(safe-area-inset-bottom));background:#080a0b;border-top:1px solid var(--l);box-shadow:0 -6px 22px #000b}nav button{flex:1;max-width:145px;border:0;background:transparent;color:#888;padding:6px 2px 4px;font-size:10px}nav button.active{color:var(--g2);font-weight:800}.ni{display:block;font-size:19px;line-height:20px}
+</style></head><body><div class="app"><header><div class="cross">✠</div><div class="brand">CANARIL ALMIRANTE</div><div class="sub">CANÁRIOS BELGAS · ARLEQUIM PORTUGUÊS</div></header><main>
+<section id="inicio"></section><section id="plantel" class="hidden"></section><section id="casais" class="hidden"></section><section id="filhotes" class="hidden"></section><section id="agenda" class="hidden"></section><section id="ficha" class="hidden"></section></main>
+<nav><button onclick="show('inicio')" id="n-inicio"><span class="ni">⌂</span>Início</button><button onclick="show('plantel')" id="n-plantel"><span class="ni">🐦</span>Plantel</button><button onclick="show('casais')" id="n-casais"><span class="ni">♧</span>Casais</button><button onclick="show('filhotes')" id="n-filhotes"><span class="ni">🐣</span>Filhotes</button><button onclick="show('agenda')" id="n-agenda"><span class="ni">▦</span>Agenda</button></nav></div>
+<script>
+const K='almirante_v6';const OLD='almirante_v5';const OLD2='almirante_v4';const seed={birds:[
+['Ancião','Macho','2024',0],['Patroa','Fêmea','2025',0],['Soberana','Fêmea','2025',0],['Buglê','Macho','2025',1],['Pinky Mary','Fêmea','2025',0],['Coisado','Macho','2025',0],['Franjinha','Fêmea','2025',1],['Bianchini','Macho','2025',0]].map(x=>({name:x[0],sex:x[1],year:x[2],crest:!!x[3],breed:'Arlequim Português',ring:'',color:'',status:'Reprodutor',notes:'',photo:''})),
+pairs:[{name:'Patroa × Ancião',nest:1,eggs:0},{name:'Soberana × Buglê',nest:2,eggs:0},{name:'Pinky Mary × Coisado',nest:3,eggs:0},{name:'Franjinha × Bianchini',nest:4,eggs:0}],chicks:[],events:[]};
+let db=JSON.parse(localStorage.getItem(K)||'null');
+if(!db){db=JSON.parse(localStorage.getItem(OLD)||localStorage.getItem(OLD2)||'null')||seed;db.pairs=(db.pairs||[]).map(p=>({...p,ovoscopyDate:p.ovoscopyDate||'',ovoscopyResult:p.ovoscopyResult||'',firstEggDate:p.firstEggDate||''}));localStorage.setItem(K,JSON.stringify(db));}else{db.pairs=(db.pairs||[]).map(p=>({...p,ovoscopyDate:p.ovoscopyDate||'',ovoscopyResult:p.ovoscopyResult||'',firstEggDate:p.firstEggDate||''}));}
+
+function save(){localStorage.setItem(K,JSON.stringify(db))}
+function requestNotifications(){if(window.AndroidNotifications&&AndroidNotifications.requestPermission){AndroidNotifications.requestPermission();}else{alert('As notificações ficam disponíveis na versão Android V6.');}}
+function show(id){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));let n=document.getElementById('n-'+id);if(n)n.classList.add('active');render()}
+function ph(b,big=false){return b.photo?`<img class="photo ${big?'big':''}" src="${b.photo}">`:`<div class="photo ${big?'big':''}">🐦</div>`}
+function render(){inicio.innerHTML=`<div class="card" style="text-align:center"><div class="cross">✠</div><h2>CANARIL ALMIRANTE</h2><div class="muted">Gestão do plantel, reprodução, genética e lembretes</div><div class="actions" style="justify-content:center"><button class="btn primary" onclick="requestNotifications()">🔔 Ativar notificações</button></div></div><div class="grid"><button class="tile" onclick="show('plantel')"><span>🐦</span><b>PLANTEL</b>Fichas e fotos</button><button class="tile" onclick="show('casais')"><span>♧</span><b>CASAIS</b>Reprodução</button><button class="tile" onclick="show('filhotes')"><span>🐣</span><b>FILHOTES</b>Nascimentos</button><button class="tile" onclick="show('agenda')"><span>▦</span><b>AGENDA</b>Manejo</button></div>`;plantel.innerHTML=`<div class="card"><div class="row"><h2>PLANTEL</h2><button class="btn primary" onclick="edit(-1)">+ Canário</button></div>${db.birds.map((b,i)=>`<div class="item"><div class="bird">${ph(b)}<div style="flex:1"><div class="name">${b.name} ${b.sex==='Macho'?'♂':'♀'}</div><div class="muted">${b.breed} · ${b.year}</div><span class="tag">${b.crest?'Topete':'Sem topete'}</span></div><button class="btn" onclick="edit(${i})">Abrir</button></div></div>`).join('')}</div>`;
+casais.innerHTML=`<div class="card"><h2>CASAIS E REPRODUÇÃO</h2><div class="notice">A partir do primeiro ovo, o aplicativo calcula automaticamente as janelas de nascimento, anilhamento e desmame e cria os lembretes. Você pode ajustar a ovoscopia.</div>${db.pairs.map((p,i)=>`<div class="item"><b>${p.name}</b>
+<div class="muted">Ninho ${p.nest} · ${p.eggs} ovos</div>
+<div class="grid">
+<div><label>Primeiro ovo</label><input type="date" id="fe-${i}" value="${p.firstEggDate||''}" onchange="calcularRepro(${i})"></div>
+<div><label>Ovoscopia</label><input type="date" id="ov-${i}" value="${p.ovoscopyDate||''}" onchange="salvarOvoscopia(${i})"></div>
+<div><label>Nascimento previsto (13–15 dias)</label><input type="text" id="bn-${i}" value="${p.birthRange||''}" readonly></div>
+<div><label>Anilhamento previsto</label><input type="text" id="rg-${i}" value="${p.ringRange||''}" readonly></div>
+<div><label>Desmame previsto</label><input type="text" id="wn-${i}" value="${p.weanRange||''}" readonly></div>
+<div><label>Resultado da ovoscopia</label><select id="or-${i}" onchange="salvarResultado(${i})"><option ${!p.ovoscopyResult||p.ovoscopyResult==='Não realizada'?'selected':''}>Não realizada</option><option ${p.ovoscopyResult==='Férteis'?'selected':''}>Férteis</option><option ${p.ovoscopyResult==='Claros'?'selected':''}>Claros</option><option ${p.ovoscopyResult==='Parcial'?'selected':''}>Parcial</option></select></div>
+</div>
+<div class="muted">🏷️ Anilhamento previsto: ${p.ringRange||'—'} · 🐥 Desmame previsto: ${p.weanRange||'—'}</div>
+<div class="card" style="margin-top:12px">
+<h3>🪺 Atualização do ninho</h3><div class="card" style="margin-top:12px">
+<h3>🧬 Análise dos possíveis filhotes</h3>
+<div class="muted">Cadastre as características conhecidas dos pais. A análise diferencia possibilidade genética de simples aparência.</div>
+<div style="margin-top:8px">
+<label>Características da fêmea</label>
+<input id="gf-${i}" type="text" placeholder="Ex.: arlequim português, topete, vermelho, melânico" value="${p.genFemale||''}" onchange="salvarGenetica(${i})">
+</div>
+<div style="margin-top:8px">
+<label>Características do macho</label>
+<input id="gm-${i}" type="text" placeholder="Ex.: arlequim português, sem topete, vermelho, melânico" value="${p.genMale||''}" onchange="salvarGenetica(${i})">
+</div>
+<button type="button" onclick="analisarFilhotes(${i})" style="margin-top:8px">🧬 Analisar possibilidades</button>
+<div id="gen-result-${i}" style="margin-top:10px"></div>
+</div>
+
+<div class="muted">Registre os ovos desta postura e marque cada um como fértil ou não fértil.</div>
+<div id="clutch-${i}" style="margin-top:10px"></div>
+<button type="button" onclick="novaPostura(${i})">+ Nova postura</button>
+<div id="clutch-summary-${i}" style="margin-top:10px"></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="saveRepro(${i})">Salvar reprodução</button><button class="btn" onclick="egg(${i})">+ Ovo</button><button class="btn" onclick="obs(${i})">+ Observação</button></div></div>`).join('')}</div>`;
+filhotes.innerHTML=`<div class="card"><div class="row"><h2>FILHOTES</h2><button class="btn primary" onclick="chick()">+ Filhote</button></div>${db.chicks.length?db.chicks.map(c=>`<div class="item"><b>${c.code}</b><div class="muted">${c.date} · ${c.sex||'Sexo não definido'} · ${c.pair}</div></div>`).join(''):'<div class="muted">Nenhum filhote registrado.</div>'}</div>`;
+agenda.innerHTML=`<div class="card"><div class="row"><h2>AGENDA</h2><button class="btn primary" onclick="eventAdd()">+ Lembrete</button></div>
+<div class="notice">As notificações programadas são do Android e podem aparecer com o aplicativo fechado. Na primeira vez, permita as notificações quando o Android solicitar.</div>
+${db.events.slice().reverse().map(e=>`<div class="item"><b>${e.date}</b><div>${e.text}</div><div class="muted">${e.pair||''}</div></div>`).join('')}</div>`}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function edit(i){let b=i<0?{name:'',sex:'Macho',year:'2026',breed:'Arlequim Português',crest:false,ring:'',color:'',status:'Ativo',notes:'',photo:''}:db.birds[i];show('ficha');ficha.innerHTML=`<div class="card"><div class="row"><h2>${i<0?'NOVO CANÁRIO':'FICHA DO CANÁRIO'}</h2><button class="btn" onclick="show('plantel')">Voltar</button></div><div style="text-align:center">${ph(b,true)}</div><label>Foto da galeria</label><input id="foto" type="file" accept="image/*"><label>Nome</label><input id="nm" value="${esc(b.name)}"><label>Sexo</label><select id="sx"><option ${b.sex==='Macho'?'selected':''}>Macho</option><option ${b.sex==='Fêmea'?'selected':''}>Fêmea</option></select><label>Ano</label><input id="yr" value="${esc(b.year)}"><label>Raça</label><input id="br" value="${esc(b.breed)}"><label><input id="tp" type="checkbox" ${b.crest?'checked':''}> Topete</label><label>Anilha</label><input id="an" value="${esc(b.ring)}"><label>Cor / padrão</label><input id="co" value="${esc(b.color)}"><label>Status</label><input id="st" value="${esc(b.status)}"><label>Observações</label><textarea id="no">${esc(b.notes)}</textarea><div class="actions"><button class="btn primary" onclick="saveBird(${i})">Salvar ficha</button>${i>=0?`<button class="btn danger" onclick="delBird(${i})">Excluir</button>`:''}</div></div>`;foto.onchange=()=>{let f=foto.files[0];if(!f)return;let r=new FileReader();r.onload=()=>foto.dataset.data=r.result;r.readAsDataURL(f)}}
+function saveBird(i){let old=i>=0?db.birds[i]:{};let b={name:nm.value.trim()||'Sem nome',sex:sx.value,year:yr.value,breed:br.value||'Arlequim Português',crest:tp.checked,ring:an.value,color:co.value,status:st.value,notes:no.value,photo:foto.dataset.data||old.photo||''};i<0?db.birds.push(b):db.birds[i]=b;save();show('plantel')}
+function delBird(i){if(confirm('Excluir este canário?')){db.birds.splice(i,1);save();show('plantel')}}
+
+function fmt(d){return d?d.toLocaleDateString('pt-BR'):''}
+
+function isoAdd(iso,days){
+  if(!iso)return '';
+  let d=new Date(iso+'T12:00:00');
+  d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
+
+function dateRange(start,end){
+  if(!start || !end)return '—';
+  return fmt(new Date(start+'T12:00:00'))+' a '+fmt(new Date(end+'T12:00:00'));
+}
+
+function schedule(title,date,pair){
+  if(!date)return;
+  if(window.AndroidNotifications && AndroidNotifications.schedule){
+    AndroidNotifications.schedule(title, date+'T08:00:00', pair||'');
+  }
+}
+
+function calcularDados(p){
+  if(!p.firstEggDate)return;
+
+  let first=p.firstEggDate;
+
+  p.birthStart=isoAdd(first,13);
+  p.birthEnd=isoAdd(first,15);
+  p.birthRange=dateRange(p.birthStart,p.birthEnd);
+
+  p.ringStart=isoAdd(p.birthStart,6);
+  p.ringEnd=isoAdd(p.birthEnd,6);
+  p.ringRange=dateRange(p.ringStart,p.ringEnd);
+
+  p.weanStart=isoAdd(p.birthStart,30);
+  p.weanEnd=isoAdd(p.birthEnd,35);
+  p.weanRange=dateRange(p.weanStart,p.weanEnd);
+
+  if(!p.ovoscopyDate)p.ovoscopyDate=isoAdd(first,6);
+}
+
+function atualizarTelaRepro(i){
+  let p=db.pairs[i];
+  calcularDados(p);
+
+  let ov=document.getElementById('ov-'+i);
+  let bn=document.getElementById('bn-'+i);
+  let rg=document.getElementById('rg-'+i);
+  let wn=document.getElementById('wn-'+i);
+
+  if(ov)ov.value=p.ovoscopyDate||'';
+  if(bn)bn.value=p.birthRange||'';
+  if(rg)rg.textContent=p.ringRange||'—';
+  if(wn)wn.textContent=p.weanRange||'—';
+}
+
+function calcularRepro(i){
+  let p=db.pairs[i];
+  let first=document.getElementById('fe-'+i).value;
+
+  if(!first){
+    p.firstEggDate='';
+    p.birthStart='';p.birthEnd='';p.birthRange='';
+    p.ringStart='';p.ringEnd='';p.ringRange='';
+    p.weanStart='';p.weanEnd='';p.weanRange='';
+    p.ovoscopyDate='';
+    save();
+    document.getElementById('ov-'+i).value='';
+    document.getElementById('bn-'+i).value='';
+    let item=document.getElementById('bn-'+i).closest('.item');
+    let muted=item ? item.querySelector('.muted:last-of-type') : null;
+    if(muted)muted.innerHTML='🏷️ Anilhamento previsto: — · 🐥 Desmame previsto: —';
+    return;
+  }
+
+  p.firstEggDate=first;
+  calcularDados(p);
+  save();
+  atualizarTelaRepro(i);
+}
+
+function scheduleRepro(p){
+  if(!p.firstEggDate)return;
+
+  calcularDados(p);
+
+  schedule('Ovoscopia — '+p.name,p.ovoscopyDate,p.name);
+
+  schedule('Nascimento previsto — início — '+p.name,p.birthStart,p.name);
+  schedule('Nascimento previsto — final — '+p.name,p.birthEnd,p.name);
+
+  schedule('Anilhamento previsto — início — '+p.name,p.ringStart,p.name);
+  schedule('Anilhamento previsto — final — '+p.name,p.ringEnd,p.name);
+
+  schedule('Desmame previsto — início — '+p.name,p.weanStart,p.name);
+  schedule('Desmame previsto — final — '+p.name,p.weanEnd,p.name);
+}
+
+function salvarOvoscopia(i){
+  let p=db.pairs[i];
+  p.ovoscopyDate=document.getElementById('ov-'+i).value;
+  save();
+}
+
+function salvarResultado(i){
+  let p=db.pairs[i];
+  p.ovoscopyResult=document.getElementById('or-'+i).value;
+  save();
+}
+
+function egg(i){
+  let p=db.pairs[i];
+  p.eggs++;
+  if(!p.firstEggDate)p.firstEggDate=new Date().toISOString().slice(0,10);
+
+  calcularDados(p);
+  scheduleRepro(p);
+
+  db.events.push({date:fmt(new Date()),text:'Ovo registrado. Nascimento previsto: '+p.birthRange,pair:p.name});
+  save();
+  render();
+}
+
+function saveRepro(i){
+  let p=db.pairs[i];
+
+  p.firstEggDate=document.getElementById('fe-'+i).value;
+  p.ovoscopyDate=document.getElementById('ov-'+i).value;
+  p.ovoscopyResult=document.getElementById('or-'+i).value;
+
+  if(p.firstEggDate){
+    calcularDados(p);
+    scheduleRepro(p);
+  }
+
+  db.events.push({
+    date:fmt(new Date()),
+    text:'Reprodução atualizada. Ovoscopia: '+
+      (p.ovoscopyDate?fmt(new Date(p.ovoscopyDate+'T12:00:00')):'não definida')+
+      ' · Nascimento previsto: '+
+      (p.birthRange||'não definido'),
+    pair:p.name
+  });
+
+  save();
+  render();
+}
+
+function saveOvo(i){saveRepro(i)}
+
+function obs(i){
+  let p=db.pairs[i];
+  let t=prompt('Observação para '+p.name+':');
+  if(t){
+    db.events.push({date:fmt(new Date()),text:t,pair:p.name});
+    save();
+    render();
+  }
+}
+
+function chick(){
+  let p=prompt('Casal:',db.pairs[0].name);
+  if(!p)return;
+  let c='ALM-'+new Date().getFullYear()+'-'+String(db.chicks.length+1).padStart(3,'0');
+  db.chicks.push({code:c,date:new Date().toLocaleDateString('pt-BR'),sex:'',pair:p});
+  save();
+  render();
+}
+
+function eventAdd(){
+  let t=prompt('Descrição do lembrete:');
+  if(!t)return;
+  let d=prompt('Data (AAAA-MM-DD):',new Date().toISOString().slice(0,10));
+  if(!d)return;
+  let h=prompt('Horário (HH:MM):','08:00')||'08:00';
+
+  db.events.push({date:fmt(new Date(d+'T12:00:00')),text:t,pair:'',iso:d+'T'+h+':00'});
+
+  if(window.AndroidNotifications&&AndroidNotifications.schedule)
+    AndroidNotifications.schedule(t,d+'T'+h+':00','Canaril Almirante');
+
+  save();
+  render();
+}
+
+db.pairs.forEach(p=>{
+  if(p.firstEggDate){
+    calcularDados(p);
+    scheduleRepro(p);
+  }
+});
+
+save();
+show('inicio');
+
+<script>
+function initV7Data(){
+  if(!Array.isArray(plantel.pairs)) plantel.pairs=[];
+  plantel.pairs.forEach(p=>{
+    if(!Array.isArray(p.posturas)) p.posturas=[];
+  });
+}
+function editarPrimeiroOvo(i){
+  const p=plantel.pairs[i]; if(!p) return;
+  const atual=p.firstEgg||p.firstEggDate||"";
+  const nova=prompt("Informe a nova data do primeiro ovo (AAAA-MM-DD):", atual);
+  if(nova===null) return;
+  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(nova)){ alert("Use o formato AAAA-MM-DD."); return; }
+  p.firstEgg=nova; p.firstEggDate=nova;
+  if(typeof calcularRepro==="function") calcularRepro(i);
+  salvar();
+}
+function apagarPostura(i,pi){
+  const p=plantel.pairs[i]; if(!p||!p.posturas||!p.posturas[pi]) return;
+  if(confirm("Apagar esta postura e todos os ovos registrados nela?")){
+    p.posturas.splice(pi,1); salvar(); renderPosturas(i); desempenhoAves();
+  }
+}
+function refazerPostura(i,pi){
+  const p=plantel.pairs[i]; if(!p||!p.posturas||!p.posturas[pi]) return;
+  if(confirm("Refazer esta postura? Os ovos registrados nela serão apagados.")){
+    p.posturas[pi]={ovos:[{resultado:""}]}; salvar(); renderPosturas(i);
+  }
+}
+function novaPostura(i){
+  const p=plantel.pairs[i];
+  if(!p) return;
+  if(!Array.isArray(p.posturas)) p.posturas=[];
+  p.posturas.push({ovos:[{resultado:""}]});
+  salvar();
+  renderPosturas(i);
+}
+function adicionarOvoPostura(i,pi){
+  const p=plantel.pairs[i]; if(!p) return;
+  p.posturas[pi].ovos.push({resultado:""});
+  salvar(); renderPosturas(i);
+}
+function removerOvoPostura(i,pi,oi){
+  const p=plantel.pairs[i]; if(!p) return;
+  if(p.posturas[pi].ovos.length>1) p.posturas[pi].ovos.splice(oi,1);
+  salvar(); renderPosturas(i);
+}
+function definirResultado(i,pi,oi,val){
+  const p=plantel.pairs[i]; if(!p) return;
+  p.posturas[pi].ovos[oi].resultado=val;
+  salvar(); renderPosturas(i);
+}
+function renderPosturas(i){
+  const p=plantel.pairs[i], box=document.getElementById('clutch-'+i);
+  if(!p||!box) return;
+  if(!Array.isArray(p.posturas)) p.posturas=[];
+  let out="";
+  p.posturas.forEach((post,pi)=>{
+    const ovos=post.ovos||[];
+    const fert=ovos.filter(o=>o.resultado==="fertil").length;
+    const inf=ovos.filter(o=>o.resultado==="infertil").length;
+    out+=`<div class="item" style="margin-bottom:10px">
+      <b>${pi+1}ª postura</b> <button type="button" onclick="refazerPostura(${i},${pi})">↻ Refazer</button> <button type="button" onclick="apagarPostura(${i},${pi})">🗑 Apagar</button>
+      ${ovos.map((o,oi)=>`<div style="display:flex;gap:6px;align-items:center;margin-top:7px">
+        <span>🥚 Ovo ${oi+1}</span>
+        <select onchange="definirResultado(${i},${pi},${oi},this.value)">
+          <option value="" ${!o.resultado?"selected":""}>Selecionar</option>
+          <option value="fertil" ${o.resultado==="fertil"?"selected":""}>Fértil</option>
+          <option value="infertil" ${o.resultado==="infertil"?"selected":""}>Não fértil</option>
+        </select>
+        <button type="button" onclick="removerOvoPostura(${i},${pi},${oi})">×</button>
+      </div>`).join("")}
+      <button type="button" onclick="adicionarOvoPostura(${i},${pi})">+ Ovo</button>
+      <div class="muted">Total no ninho: ${ovos.length} · Férteis: ${fert} · Não férteis: ${inf}</div>
+    </div>`;
+  });
+  box.innerHTML=out||'<div class="muted">Nenhuma postura registrada.</div>';
+  renderResumo(i);
+}
+function renderResumo(i){
+  const p=plantel.pairs[i], box=document.getElementById('clutch-summary-'+i);
+  if(!p||!box) return;
+  let total=0,fert=0,inf=0;
+  (p.posturas||[]).forEach(x=>(x.ovos||[]).forEach(o=>{
+    total++; if(o.resultado==="fertil")fert++; if(o.resultado==="infertil")inf++;
+  }));
+  const taxa=total?((fert/total)*100).toFixed(1).replace(".",","):"0";
+  box.innerHTML=`<b>📊 Desempenho do casal</b><br>
+  Posturas: ${(p.posturas||[]).length} · Ovos: ${total} · Férteis: ${fert} · Não férteis: ${inf} · Fertilidade: ${taxa}%`;
+}
+function desempenhoAves(){
+  const s={};
+  (plantel.pairs||[]).forEach(p=>{
+    const names=[p.female,p.male].filter(Boolean);
+    names.forEach(n=>{if(!s[n])s[n]={posturas:0,ovos:0,fert:0,inf:0};});
+    (p.posturas||[]).forEach(post=>{
+      const ovos=post.ovos||[];
+      names.forEach(n=>{
+        s[n].posturas++; s[n].ovos+=ovos.length;
+        s[n].fert+=ovos.filter(o=>o.resultado==="fertil").length;
+        s[n].inf+=ovos.filter(o=>o.resultado==="infertil").length;
+      });
+    });
+  });
+  plantel.desempenhoAves=s;
+  salvar();
+  return s;
+}
+function mostrarDesempenhoAves(){
+  const s=desempenhoAves();
+  const linhas=Object.entries(s).map(([n,v])=>{
+    const taxa=v.ovos?((v.fert/v.ovos)*100).toFixed(1).replace(".",","):"0";
+    return `<div class="item"><b>${n}</b><div class="muted">${v.posturas} postura(s)/cruzamento · ${v.ovos} ovos · ${v.fert} férteis · ${v.inf} não férteis · ${taxa}%</div></div>`;
+  }).join("");
+  alert(linhas.replace(/<[^>]*>/g,"\n").replace(/\n+/g,"\n").trim()||"Ainda não há histórico.");
+}
+initV7Data();
+
+function salvarGenetica(i){
+  const p=plantel.pairs[i]; if(!p) return;
+  p.genFemale=(document.getElementById('gf-'+i)||{}).value||'';
+  p.genMale=(document.getElementById('gm-'+i)||{}).value||'';
+  salvar();
+}
+function analisarFilhotes(i){
+  const p=plantel.pairs[i]; if(!p) return;
+  salvarGenetica(i);
+  const f=(p.genFemale||'').toLowerCase(), m=(p.genMale||'').toLowerCase();
+  const poss=[];
+  if(f.includes('arlequim')||m.includes('arlequim')) poss.push('Arlequim Português: possível, dependendo dos genes efetivamente portados.');
+  if(f.includes('topete')||m.includes('topete')) poss.push('Topete: possível se houver alelo de topete; a porcentagem exata depende do genótipo.');
+  if(f.includes('vermelho')||m.includes('vermelho')) poss.push('Fator vermelho: possível; intensidade não pode ser calculada apenas pela aparência.');
+  if(f.includes('melânico')||f.includes('melanico')||m.includes('melânico')||m.includes('melanico')) poss.push('Melanina: possível, mas a distribuição depende do genótipo de ambos.');
+  if(!poss.length) poss.push('Ainda não há dados genéticos suficientes para uma previsão confiável.');
+  const box=document.getElementById('gen-result-'+i);
+  if(box) box.innerHTML='<b>Resultado da análise</b><ul>'+poss.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="muted">Probabilidades numéricas só serão mostradas quando os genótipos necessários estiverem cadastrados.</div>';
+}
+</script></body></html>
